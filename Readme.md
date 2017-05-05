@@ -20,20 +20,20 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-	return "Hello World!"
+  return "Hello World!"
 
 
 @app.route('/api/obj/<int:id_num>')
 def get_by_id(id_num):
-	if id_num % 2 == 0:
-		time.sleep(5)		
-	elif id_num % 2 == 1:
-		time.sleep(1)
+  if id_num % 2 == 0:
+    time.sleep(5)   
+  elif id_num % 2 == 1:
+    time.sleep(1)
 
-	return "Fetched result"
+  return "Fetched result"
 
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', debug=True, port=80)	
+  app.run(host='0.0.0.0', debug=True, port=80)  
 ```
 
 We've got a home route that gives us Hello World, and an api route, which takes in an object id and returns "Fetched Result". Noticed that we've made a wait of 5 seconds for even numbered IDs, and a wait of 1 second for odd numbered IDs. This example will help us visualize differing response times once we get our monitoring infrastructure set up.
@@ -271,4 +271,28 @@ We need to tell Grafana that we want to read from an InfluxDB data source. The f
 #### A first dashboard
 The best exercise to ensure that everything is working is to set up a simple dashboard based on the query we used earlier. From Grafana's homepage, head to Dashboards > New, and choose the table type. Now hit edit, and go down to the query field. Use the toggle on the right to get the manual edit mode, and input the same query as before, ``` SELECT * FROM uwsgi_log ```. You should now see the same datapoints you saw when you ran the query beforehand in the InfluxDB console. Congratulations! You've mastered the whole pipeline of collecting, storing, and viewing data. Now comes the fun of customizing your dashboards.
 
-### Building a dashboard
+### A Simple Dashboard
+#### Singlestat - Total Requests
+The simplest thing to add to your dashboard is a singlestat. The following query will show you the total number of requests you've had during the time period you are currently filtering on in Grafana.
+```
+SELECT count(status) FROM uwsgi_log WHERE $timeFilter
+```
+Now lets say you were only interested in checking out how many hits your API routes got. You can add this to the where clause like so:
+```
+SELECT count(status) FROM uwsgi_log WHERE uri =~ /.*api.*/ AND $timeFilter
+```
+#### Graph - Average Response Times
+Lets say we want to visualize the average response time experienced for different API endpoints, broken down by endpoint. We can start with the following query, which is a small modification of the previous one:
+```
+SELECT resTime FROM uwsgi_log WHERE uri =~ /.*api.*/ AND $timeFilter fill(null)
+```
+Lets also change our graph to display points. We can do this under the Display tab, by checking the Points draw mode. Now lets modify our query to break down the data by route. We will also take the average across a time interval to smooth out the graph once we have more data, and do make sure we don't crash Grafana by asking it to display too many points.
+```
+SELECT mean(resTime) FROM uwsgi_log WHERE uri =~ /.*api.*/ AND $timeFilter GROUP BY time($__interval), "uri" fill(null)
+```
+Under the *Alias By* field under our query, lets also add ``` $tag_uri ```, to make the output of our graph a bit cleaner. We should now see different colors for our different endpoints, which will help us isolate those with a higher response time.
+
+You'll notice that our scale seems to be a little off. We need to specify a unit for this graph. We can do this under the Axes tab. Set the Left Y unit to be Time > milliseconds, and notice that the time is now displayed correctly on our graph.
+#### Table - Recent Requests
+
+
