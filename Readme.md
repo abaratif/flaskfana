@@ -1,5 +1,36 @@
 # Flask + Grafana = Flaskfana
 
+Table of Contents
+=================
+
+   * [Flask   Grafana = Flaskfana](#flask--grafana--flaskfana)
+            * [Resources](#resources)
+      * [A simple Flask app](#a-simple-flask-app)
+            * [~/app/main.py](#appmainpy)
+      * [The Docker image](#the-docker-image)
+            * [~/Dockerfile](#dockerfile)
+      * [InfluxDB](#influxdb)
+         * [Background](#background)
+         * [Setup](#setup)
+      * [Collecting log data with Telegraf](#collecting-log-data-with-telegraf)
+         * [Telegraf and the logparser plugin](#telegraf-and-the-logparser-plugin)
+         * [Telegraf config](#telegraf-config)
+            * [~/telegraf.conf.old (example)](#telegrafconfold-example)
+            * [~/telegraf.conf (actual)](#telegrafconf-actual)
+         * [Grok patterns](#grok-patterns)
+         * [Telegraf installation](#telegraf-installation)
+            * [~/Dockerfile](#dockerfile-1)
+            * [~/supervisord.conf](#supervisordconf)
+      * [Visualization with Grafana](#visualization-with-grafana)
+         * [Installation](#installation)
+         * [Configuration](#configuration)
+            * [Adding a data source](#adding-a-data-source)
+            * [A first dashboard](#a-first-dashboard)
+         * [A Simple Dashboard](#a-simple-dashboard)
+            * [Singlestat - Total Requests](#singlestat---total-requests)
+            * [Graph - Average Response Times](#graph---average-response-times)
+            * [Table - Recent Requests](#table---recent-requests)
+
 #### Resources
 1. [Tiangolo's uwsgi-nginx-flask docker image](https://hub.docker.com/r/tiangolo/uwsgi-nginx/)
 2. [InfluxDBs guide to parsing logfiles with Telegraf](https://hub.docker.com/r/tiangolo/uwsgi-nginx/)
