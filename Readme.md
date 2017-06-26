@@ -32,7 +32,6 @@ Table of Contents
       * [Additional Resources](#additional-resources)
 
 
-
 ## A simple Flask app
 
 Let's start with a simple example Flask app. Here's the code:
