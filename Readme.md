@@ -1,42 +1,4 @@
-# Flask + Grafana = Flaskfana
 
-Table of Contents
-=================
-
-   * [Flask   Grafana = Flaskfana](#flask--grafana--flaskfana)
-            * [Resources](#resources)
-      * [A simple Flask app](#a-simple-flask-app)
-            * [~/app/main.py](#appmainpy)
-      * [The Docker image](#the-docker-image)
-            * [~/Dockerfile](#dockerfile)
-      * [InfluxDB](#influxdb)
-         * [Background](#background)
-         * [Setup](#setup)
-      * [Collecting log data with Telegraf](#collecting-log-data-with-telegraf)
-         * [Telegraf and the logparser plugin](#telegraf-and-the-logparser-plugin)
-         * [Telegraf config](#telegraf-config)
-            * [~/telegraf.conf.old (example)](#telegrafconfold-example)
-            * [~/telegraf.conf (actual)](#telegrafconf-actual)
-         * [Grok patterns](#grok-patterns)
-         * [Telegraf installation](#telegraf-installation)
-            * [~/Dockerfile](#dockerfile-1)
-            * [~/supervisord.conf](#supervisordconf)
-      * [Visualization with Grafana](#visualization-with-grafana)
-         * [Installation](#installation)
-         * [Configuration](#configuration)
-            * [Adding a data source](#adding-a-data-source)
-            * [A first dashboard](#a-first-dashboard)
-         * [A Simple Dashboard](#a-simple-dashboard)
-            * [Singlestat - Total Requests](#singlestat---total-requests)
-            * [Graph - Average Response Times](#graph---average-response-times)
-            * [Table - Recent Requests](#table---recent-requests)
-
-#### Resources
-1. [Tiangolo's uwsgi-nginx-flask docker image](https://hub.docker.com/r/tiangolo/uwsgi-nginx/)
-2. [InfluxDBs guide to parsing logfiles with Telegraf](https://hub.docker.com/r/tiangolo/uwsgi-nginx/)
-3. [Brian Christner's Docker Monitoring guide](https://github.com/vegasbrianc/docker-monitoring)
-4. [Grok Debugger](https://grokdebug.herokuapp.com/)
-5. [Telegraf grok patterns](https://github.com/influxdata/telegraf/blob/master/plugins/inputs/logparser/grok/patterns/influx-patterns)
 
 ## A simple Flask app
 
@@ -324,6 +286,12 @@ SELECT mean(resTime) FROM uwsgi_log WHERE uri =~ /.*api.*/ AND $timeFilter GROUP
 Under the *Alias By* field under our query, lets also add ``` $tag_uri ```, to make the output of our graph a bit cleaner. We should now see different colors for our different endpoints, which will help us isolate those with a higher response time.
 
 You'll notice that our scale seems to be a little off. We need to specify a unit for this graph. We can do this under the Axes tab. Set the Left Y unit to be Time > milliseconds, and notice that the time is now displayed correctly on our graph.
-#### Table - Recent Requests
+
+## Additional Resources
+1. [Tiangolo's uwsgi-nginx-flask docker image](https://hub.docker.com/r/tiangolo/uwsgi-nginx/)
+2. [InfluxDBs guide to parsing logfiles with Telegraf](https://hub.docker.com/r/tiangolo/uwsgi-nginx/)
+3. [Brian Christner's Docker Monitoring guide](https://github.com/vegasbrianc/docker-monitoring)
+4. [Grok Debugger](https://grokdebug.herokuapp.com/)
+5. [Telegraf grok patterns](https://github.com/influxdata/telegraf/blob/master/plugins/inputs/logparser/grok/patterns/influx-patterns)
 
 
